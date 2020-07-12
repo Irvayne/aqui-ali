@@ -1,0 +1,1 @@
+web: gunicorn aquiAli.wsgi --log-file -

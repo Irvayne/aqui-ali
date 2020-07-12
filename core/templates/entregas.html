@@ -1,0 +1,166 @@
+{% extends "decorator.html" %}
+{% load staticfiles %}
+
+{% block nav %}
+
+<div class="nav-wrapper">
+  <ul class="nav flex-column">
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'dashboard' %}">
+        <i class="material-icons">place</i>
+        <span>Mapa</span>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link active" href="{% url 'listar_entregas' %}">
+        <i class="material-icons">swap_horiz</i>
+        <span>Entregas</span>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link " href="{% url 'listar_empresas' %}">
+        <i class="material-icons">account_balance</i>
+        <span>Empresas</span>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'listar_funcionarios' %}">
+        <i class="material-icons">motorcycle</i>
+        <span>Funcionários</span>
+      </a>
+    </li>
+  </ul>
+</div>
+
+{% endblock %}
+
+{% block body %}
+
+<div class="main-content-container container-fluid px-4">
+	<div class="page-header row no-gutters py-4">
+		<div class="col-12 col-sm-4 text-center text-sm-left mb-0">
+			<h3 class="page-title">Entregas Cadastrados</h3>
+		</div>
+		<!-- Button trigger modal -->
+		<div class="col-12 col-sm-8 text-center text-sm-right mb-0">
+			<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+				Cadastrar
+			</button>
+		</div>
+	</div>
+
+
+
+	<!-- Modal -->
+	<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">Cadastrar Entrega</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<form accept="{% url 'listar_entregas' %}" method="post">
+
+						{% csrf_token %}
+						<div class="form-group">
+							<label>Descrição:</label>
+                        <input type="text" class="form-control" id="id_nome" name='descricao'  placeholder="Descriçao">
+						</div>
+
+
+						<div class="form-group">
+							<label>Empresa:</label>
+							<select class="form-control" id="empresa" name="empresa">
+                            {% for empresa in empresas %}
+                                <option value="{{empresa.id}}">{{empresa.nome}}</option>
+                            {% endfor %}
+                        </select>
+						</div>
+
+						<div class="form-group">
+							<label>Funcionario:</label>
+							<select class="form-control" id="funcionario" name="funcionario">
+                            {% for f in funcionarios %}
+                                <option value="{{f.id}}">{{f.nome}}</option>
+                            {% endfor %}
+                        </select>
+						</div>
+
+
+
+						<div class="modal-footer">
+							<button type="reset"  class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+							<button type="submit" class="btn btn-primary">Salvar</button>
+						</div>
+
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col">
+			<div class="card card-small mb-4">
+
+				<div class="card-body p-0 pb-3 text-center">
+					<table class="table mb-0">
+						<thead>
+							<tr>
+								<th scope="col">Descrição</th>
+								<th scope="col">Funcionário</th>
+								<th scope="col">Empresa</th>
+								<th scope="col">Horário</th>
+                                <th scope="col">Opções</th>
+							</tr>
+						</thead>
+						<tbody>
+							{% for entrega in entregas %}
+							<tr>
+								<td>{{ entrega.descricao}}</td>
+								<td>{{ entrega.funcionario.nome}}</td>
+								<td>{{ entrega.empresa.nome}}</td>
+
+								<td>{{ entrega.localizacao.data}}</td>
+                                <td><a  target="_blank" href="https://www.google.com.br/maps/@{{ entrega.localizacao.latitude}},{{ entrega.localizacao.longitude}},16z" class="btn btn-info"  >Mapa</a>
+                                    <button class="btn btn-success" data-toggle="modal" data-target="#modalAnexo{{entrega.id}}">Anexo</button>
+                                </td>
+							</tr>
+
+
+							<!-- Modal -->
+								<div class="modal fade" id="modalAnexo{{entrega.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+									<div class="modal-dialog" role="document">
+										<div class="modal-content">
+											<div class="modal-header">
+												<h5 class="modal-title">Anexo</h5>
+												<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+													<span aria-hidden="true">&times;</span>
+												</button>
+											</div>
+											<div class="modal-body">
+												<img src={{ entrega.anexo }}  />
+											</div>
+										</div>
+									</div>
+								</div>
+
+
+
+
+
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+
+
+{% endblock %}
