@@ -17,6 +17,7 @@
         <span>Entregas</span>
       </a>
     </li>
+      {% if request.session.empresa == False  %}
     <li class="nav-item">
       <a class="nav-link " href="{% url 'listar_empresas' %}">
         <i class="material-icons">account_balance</i>
@@ -29,6 +30,7 @@
         <span>Funcionários</span>
       </a>
     </li>
+      {% endif  %}
   </ul>
 </div>
 
@@ -42,11 +44,13 @@
 			<h3 class="page-title">Entregas Cadastrados</h3>
 		</div>
 		<!-- Button trigger modal -->
+        {% if request.session.empresa == False  %}
 		<div class="col-12 col-sm-8 text-center text-sm-right mb-0">
 			<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
 				Cadastrar
 			</button>
 		</div>
+        {% endif %}
 	</div>
 
 
@@ -67,7 +71,7 @@
 						{% csrf_token %}
 						<div class="form-group">
 							<label>Descrição:</label>
-                        <input type="text" class="form-control" id="id_nome" name='descricao'  placeholder="Descriçao">
+                        <input type="text" class="form-control" id="id_nome" name='descricao'  placeholder="Descriçao" required>
 						</div>
 
 
@@ -142,7 +146,7 @@
 												</button>
 											</div>
 											<div class="modal-body">
-												<img src={{ entrega.anexo }}  />
+												<img src={{ entrega.anexo }}  style="max-width: 450px;"/>
 											</div>
 										</div>
 									</div>

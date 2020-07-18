@@ -15,13 +15,20 @@ def entrar(request):
             perfil = Perfil.objects.get(login = login, senha=senha)
             request.session['login'] = login
             request.session['senha'] = senha
+            request.session['nome'] = perfil.nome
+            request.session['empresa'] = False
             return redirect('dashboard')
         except:
             try:
                 empresa = Empresa.objects.get(cnpj=login, senha=senha)
+                request.session['login'] = login
+                request.session['senha'] = senha
+                request.session['id_empresa'] = empresa.id
+                request.session['nome'] = empresa.nome
+                request.session['empresa'] = True
                 return redirect('dashboard')
             except:
-                return render(request, 'entrar.html')
+                return render(request, 'entrar.html', {'message': 'Usuário e/ou senha inválidos!'})
     return render(request, 'entrar.html')
 
 def verificaLogin(request):
@@ -37,33 +44,22 @@ def verificaLogin(request):
 def sair(request):
     request.session['login'] = None
     request.session['senha'] = None
+    request.session['id_empresa'] = None
+    request.session['empresa'] = None
+    request.session['nome'] = None
     return render(request, 'entrar.html')
 
 
 def dashboard(request):
     if verificaLogin(request) == False:
         return render(request, 'entrar.html')
-
-    funcionarios = Funcionario.objects.all()
-    empresas = Empresa.objects.all()
-
-    listaFuncionario = []
-
-    for f in funcionarios:
-        fun = {}
-        fun["nome"] = f.nome
-        for loc in f.localizacoes.all():
-            fun["latitude"] = loc.latitude
-            fun["longitude"] = loc.longitude
-        listaFuncionario.append(fun)
-
-
-
-    return render(request, 'dashboard.html' , {'empresas': empresas, 'funcionarios': listaFuncionario})
+    return render(request, 'dashboard.html')
 
 def listar_empresas(request):
     if verificaLogin(request) == False:
         return render(request, 'entrar.html')
+    if request.session['empresa'] == True:
+        return redirect('dashboard')
     if request.method == 'POST':
 
         empresa = Empresa()
@@ -83,6 +79,8 @@ def listar_empresas(request):
 def listar_funcionarios(request):
     if verificaLogin(request) == False:
         return render(request, 'entrar.html')
+    if request.session['empresa'] == True:
+        return redirect('dashboard')
     if request.method == 'POST':
 
         funcionario = Funcionario()
@@ -135,7 +133,14 @@ def listar_entregas(request):
     else:
         funcionarios = Funcionario.objects.all()
         empresas = Empresa.objects.all()
-        entregas = Entrega.objects.all()
+        if request.session['empresa'] == True:
+            entregas_total = Entrega.objects.all()
+            entregas = []
+            for entrega in entregas_total:
+                if entrega.empresa.id == request.session['id_empresa']:
+                    entregas.append(entrega)
+        else:
+            entregas = Entrega.objects.all()
     return render(request, 'entregas.html', {'empresas': empresas, 'funcionarios': funcionarios, 'entregas': entregas} )
 
 def carga(request):

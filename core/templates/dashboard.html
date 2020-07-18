@@ -52,34 +52,41 @@
             </div>
             <input class="navbar-search form-control" type="text" placeholder="Search for something..." aria-label="Search"> </div>
           </form>
-<div class="nav-wrapper">
-  <ul class="nav flex-column">
-    <li class="nav-item">
-      <a class="nav-link active" href="{% url 'dashboard' %}">
-        <i class="material-icons">place</i>
-        <span>Mapa</span>
-      </a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" href="{% url 'listar_entregas' %}">
-        <i class="material-icons">swap_horiz</i>
-        <span>Entregas</span>
-      </a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link " href="{% url 'listar_empresas' %}">
-        <i class="material-icons">account_balance</i>
-        <span>Empresas</span>
-      </a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" href="{% url 'listar_funcionarios' %}">
-        <i class="material-icons">motorcycle</i>
-        <span>Funcionários</span>
-      </a>
-    </li>
-  </ul>
-</div>
+          <div class="nav-wrapper">
+            <ul class="nav flex-column">
+              <li class="nav-item">
+                <a class="nav-link active" href="{% url 'dashboard' %}">
+                  <i class="material-icons">place</i>
+                  <span>Mapa</span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'listar_entregas' %}">
+                  <i class="material-icons">swap_horiz</i>
+                  <span>Entregas</span>
+                </a>
+              </li>
+
+              {% if request.session.empresa == False  %}
+
+
+              <li class="nav-item">
+                <a class="nav-link " href="{% url 'listar_empresas' %}">
+                  <i class="material-icons">account_balance</i>
+                  <span>Empresas</span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'listar_funcionarios' %}">
+                  <i class="material-icons">motorcycle</i>
+                  <span>Funcionários</span>
+                </a>
+              </li>
+
+              {% endif %}
+
+            </ul>
+          </div>
 
 </aside>
         <!-- End Main Sidebar -->
@@ -91,22 +98,20 @@
                 <div class="input-group input-group-seamless ml-3">
                   <div class="input-group-prepend">
                     <div class="input-group-text">
-                      <i class="fas fa-search"></i>
+
                     </div>
                   </div>
-                  <input class="navbar-search form-control" type="text" placeholder="Pesquisar..." aria-label="Search"> </div>
+                 </div>
                 </form>
                 <ul class="navbar-nav border-left flex-row ">
 
                   <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle text-nowrap px-3" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-                      <img class="user-avatar rounded-circle mr-2" src="{% static "dash/images/avatars/eu.png" %}" alt="User Avatar">
-                      <span class="d-none d-md-inline-block">{{usuario.nome}}</span>
+                      <img class="user-avatar rounded-circle mr-2" src="https://static.thenounproject.com/png/363640-200.png" alt="User Avatar">
+                      <span class="d-none d-md-inline-block">{{request.session.nome}}</span>
                     </a>
                     <div class="dropdown-menu dropdown-menu-small">
-                      <a class="dropdown-item" href="#">
-                        <i class="material-icons">&#xE7FD;</i> Perfil</a>
-                            <a class="dropdown-item text-danger" href="#">
+                      <a class="dropdown-item text-danger" href="{% url 'sair' %}">
                               <i class="material-icons text-danger">&#xE879;</i> Sair </a>
                             </div>
                           </li>

@@ -51,7 +51,7 @@
         <ul>
           <li><a href="{% url 'inicio' %}">Página Inicial</a></li>
           <li><a href="#about">Sobre</a></li>
-          <li class="get-started active"><a href="#about">Entrar</a></li>
+          <li class="get-started active"><a href="{% url 'entrar' %}">Entrar</a></li>
         </ul>
       </nav><!-- .nav-menu -->
 
@@ -59,6 +59,12 @@
   </header><!-- End Header -->
 <div class="panel panel-default">
   <div class="container">
+            {% if message %}
+                    <br>
+                    <li class="alert alert-danger">{{ message }}</li>
+
+
+            {% endif %}
     <div class="row" style="margin-top: 10%;align-items: center;display: flex;flex-direction: row;flex-wrap: wrap;justify-content: center;">
     <div class="col-lg-6">
             <form action="{% url 'entrar' %}" method="POST">
@@ -68,14 +74,14 @@
 
           <div class="form-group">
                 <h5>Usuário</h5>
-                <input type="text" class="form-control" name="login" id="login" placeholder="Usuário" />
+                <input type="text" class="form-control" name="login" id="login" placeholder="Usuário" required/>
 
               </div>
 
 
               <div class="form-group">
                 <h5>Senha</h5>
-                <input type="password" class="form-control" name="senha" id="senha" placeholder="Senha" />
+                <input type="password" class="form-control" name="senha" id="senha" placeholder="Senha" required/>
               </div>
 
 

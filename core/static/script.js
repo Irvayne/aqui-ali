@@ -48,7 +48,7 @@ $.ajax({
 					url : '/api/empresas',
 					success : function(data) {
 
-					//primeiro input de cargos
+
 						var element = document.getElementById('name_input1');
 						element.innerHTML = '<b>Empresas</b>';
 
@@ -59,8 +59,7 @@ $.ajax({
 					            x.appendChild(t);
 					            document.getElementById('select1').appendChild(x);
 						}
-
-						selectFuncionario('0');
+						selectFuncionario(data[0].id);
 
 					}
 				});

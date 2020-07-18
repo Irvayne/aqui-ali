@@ -53,8 +53,7 @@ def buscarFuncionarios(request):
     funcionario["id"] = 0
     funcionario["nome"] = 'Todos'
     listaFuncionarios.append(funcionario)
-    if string == '0':
-
+    if string == 0:
         funcionarios = Funcionario.objects.all()
         for f in funcionarios:
             funcionario = {}
@@ -94,11 +93,15 @@ def buscarFuncionarios(request):
 @csrf_exempt
 def todasEmpresas(request):
     listaEmpresas = []
-    empresas = Empresa.objects.all()
-    empresa = {}
-    empresa["id"] = 0
-    empresa["nome"] = "Todas"
-    listaEmpresas.append(empresa)
+    empresas = []
+    if request.session['empresa'] == False:
+        empresas = Empresa.objects.all()
+        empresa = {}
+        empresa["id"] = 0
+        empresa["nome"] = "Todas"
+        listaEmpresas.append(empresa)
+    else:
+        empresas.append(Empresa.objects.get(id=request.session['id_empresa']))
     for emp in empresas:
         empresa = {}
         empresa["id"] = emp.id

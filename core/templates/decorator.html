@@ -61,22 +61,20 @@
                 <div class="input-group input-group-seamless ml-3">
                   <div class="input-group-prepend">
                     <div class="input-group-text">
-                      <i class="fas fa-search"></i>
+
                     </div>
                   </div>
-                  <input class="navbar-search form-control" type="text" placeholder="Pesquisar..." aria-label="Search"> </div>
+                   </div>
                 </form>
                 <ul class="navbar-nav border-left flex-row ">
 
                   <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle text-nowrap px-3" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-                      <img class="user-avatar rounded-circle mr-2" src="{% static "dash/images/avatars/eu.png" %}" alt="User Avatar">
-                      <span class="d-none d-md-inline-block">{{usuario.nome}}</span>
+                      <img class="user-avatar rounded-circle mr-2" src="https://static.thenounproject.com/png/363640-200.png" alt="User Avatar">
+                      <span class="d-none d-md-inline-block">{{request.session.nome}}</span>
                     </a>
                     <div class="dropdown-menu dropdown-menu-small">
-                      <a class="dropdown-item" href="#">
-                        <i class="material-icons">&#xE7FD;</i> Perfil</a>
-                            <a class="dropdown-item text-danger" href="#">
+                      <a class="dropdown-item text-danger" href="{% url 'sair' %}">
                               <i class="material-icons text-danger">&#xE879;</i> Sair </a>
                             </div>
                           </li>
@@ -96,8 +94,8 @@
                       <ul class="nav">
 
                       </ul>
-                      <span class="copyright ml-auto my-auto mr-2">Copyright © 2018
-                        <a href="#" rel="nofollow">LOST</a>
+                      <span class="copyright ml-auto my-auto mr-2">Copyright © 2020
+                        <a href="#" rel="nofollow">Irvayne e Gustavo</a>
                       </span>
                     </footer>
                   </main>
