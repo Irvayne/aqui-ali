@@ -2,6 +2,7 @@
 from django.shortcuts import render, redirect
 from core.models import Perfil, Empresa, Funcionario, Entrega, Localizacao
 from core.carga import realizarCarga
+from datetime import datetime
 
 
 def home(request):
@@ -98,11 +99,11 @@ def listar_funcionarios(request):
         loc.funcionario = funcionario
         loc.save()
 
-        empresa = request.POST.get('empresa')
-
-        if empresa != '0':
-            print('selecionou empresa')
-            funcionario.empresas.add(Empresa.objects.get(id=int(empresa)))
+        empresas = Empresa.objects.all()
+        for empresa in empresas:
+            if 'empresa-'+str(empresa.id) in request.POST: 
+                variavel = request.POST['empresa-'+str(empresa.id)]
+                funcionario.empresas.add(Empresa.objects.get(id=int(empresa.id)))
 
         funcionario.save()
         return redirect('listar_funcionarios')
@@ -129,19 +130,29 @@ def listar_entregas(request):
             entrega.funcionario = Funcionario.objects.get(id=int(funcionario))
 
         entrega.save()
+
+        loc = Localizacao()
+        loc.latitude = '-5.08921'
+        loc.longitude = '-42.8016'
+        loc.data = datetime.now()
+        loc.save()
+        loc.entrega = entrega
+        loc.save()
+
         return redirect('listar_entregas')
     else:
         funcionarios = Funcionario.objects.all()
         empresas = Empresa.objects.all()
         if request.session['empresa'] == True:
-            entregas_total = Entrega.objects.all()
+            entregas_total = Entrega.objects.all().order_by('id')
             entregas = []
             for entrega in entregas_total:
                 if entrega.empresa.id == request.session['id_empresa']:
                     entregas.append(entrega)
         else:
-            entregas = Entrega.objects.all()
-    return render(request, 'entregas.html', {'empresas': empresas, 'funcionarios': funcionarios, 'entregas': entregas} )
+            entregas = Entrega.objects.all().order_by('id')
+            
+    return render(request, 'entregas.html', {'empresas': empresas, 'funcionarios': funcionarios, 'entregas': entregas.reverse()} )
 
 def carga(request):
     realizarCarga()
