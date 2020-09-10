@@ -17,6 +17,7 @@ class Empresa(models.Model):
     cnpj = models.CharField(max_length=100)
     telefone = models.CharField(max_length=20)
     senha = models.CharField(max_length=100)
+    ativo = models.BooleanField(default=True)
 
 class Funcionario(models.Model):
 
@@ -24,6 +25,7 @@ class Funcionario(models.Model):
     cpf = models.CharField(max_length=20)
     empresas = models.ManyToManyField(Empresa)
     senha = models.CharField(max_length=100)
+    ativo = models.BooleanField(default=True)
 
 
 class Entrega(models.Model):
@@ -32,6 +34,7 @@ class Entrega(models.Model):
     anexo = models.CharField(max_length=250000)
     funcionario = models.ForeignKey(Funcionario, on_delete=models.CASCADE, related_name='entregas')
     empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE, related_name='entregas')
+    ativo = models.BooleanField(default=True)
 
 class Localizacao(models.Model):
 

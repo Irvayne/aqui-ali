@@ -54,11 +54,12 @@ def buscarFuncionarios(request):
     funcionario["nome"] = 'Todos'
     listaFuncionarios.append(funcionario)
     if string == 0:
-        funcionarios = Funcionario.objects.all()
+        funcionarios = Funcionario.objects.filter(ativo=True).all()
         for f in funcionarios:
             funcionario = {}
             funcionario["id"] = f.id
             funcionario["nome"] = f.nome
+            funcionario['ativo'] = f.ativo
             for loc in f.localizacoes.all():
                 funcionario["latitude"] = loc.latitude
                 funcionario["longitude"] = loc.longitude
@@ -66,7 +67,7 @@ def buscarFuncionarios(request):
         return Response(listaFuncionarios)
     else:
 
-        funcionarios = Funcionario.objects.all()
+        funcionarios = Funcionario.objects.filter(ativo=True).all()
         for f in funcionarios:
             valido = False
             for emp in f.empresas.all():
@@ -76,6 +77,7 @@ def buscarFuncionarios(request):
             funcionario = {}
             funcionario["id"] = f.id
             funcionario["nome"] = f.nome
+            funcionario['ativo'] = f.ativo
             for loc in f.localizacoes.all():
                 funcionario["latitude"] = loc.latitude
                 funcionario["longitude"] = loc.longitude
@@ -95,7 +97,7 @@ def todasEmpresas(request):
     listaEmpresas = []
     empresas = []
     if request.session['empresa'] == False:
-        empresas = Empresa.objects.all()
+        empresas = Empresa.objects.filter(ativo=True).all()
         empresa = {}
         empresa["id"] = 0
         empresa["nome"] = "Todas"
@@ -106,6 +108,7 @@ def todasEmpresas(request):
         empresa = {}
         empresa["id"] = emp.id
         empresa["nome"] = emp.nome
+        empresa['ativo'] = emp.ativo
         listaEmpresas.append(empresa)
     return Response(listaEmpresas)
 
@@ -227,6 +230,7 @@ def populaObjetoFuncionario(func):
     funcionario["cpf"] = func.cpf
     funcionario["nome"] = func.nome
     funcionario["senha"] = func.senha
+    funcionario["ativo"] = func.ativo
     listaEmpresas = []
     listaEntregas = []
     listaLocalizacoes = []
@@ -238,6 +242,7 @@ def populaObjetoFuncionario(func):
         empresa["descricao"] = emp.descricao
         empresa["cnpj"] = emp.cnpj
         empresa["telefone"] = emp.telefone
+        empresa["ativo"] = emp.ativo
         listaEmpresas.append(empresa)
 
     funcionario["empresas"] = listaEmpresas
@@ -246,6 +251,7 @@ def populaObjetoFuncionario(func):
         ent = {}
         ent["descricao"] = entr.descricao
         ent["id_empresa"] = entr.empresa.id
+        ent["ativo"] = entr.ativo
         localizacao = entr.localizacao
         l = {}
         l["latitude"] = localizacao.latitude

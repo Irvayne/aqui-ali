@@ -66,7 +66,7 @@
 					</button>
 				</div>
 				<div class="modal-body">
-					<form accept="{% url 'listar_entregas' %}" method="post">
+					<form action="{% url 'listar_entregas' %}" method="post">
 
 						{% csrf_token %}
 						<div class="form-group">
@@ -77,7 +77,7 @@
 
 						<div class="form-group">
 							<label>Empresa:</label>
-							<select class="form-control" id="empresa" name="empresa">
+							<select class="form-control" id="empresa" name="empresa" required>
                             {% for empresa in empresas %}
                                 <option value="{{empresa.id}}">{{empresa.nome}}</option>
                             {% endfor %}
@@ -86,7 +86,7 @@
 
 						<div class="form-group">
 							<label>Funcionario:</label>
-							<select class="form-control" id="funcionario" name="funcionario">
+							<select class="form-control" id="funcionario" name="funcionario" required>
                             {% for f in funcionarios %}
                                 <option value="{{f.id}}">{{f.nome}}</option>
                             {% endfor %}
@@ -129,10 +129,44 @@
 								<td>{{ entrega.empresa.nome}}</td>
 
 								<td>{{ entrega.localizacao.data}}</td>
-                                <td><a  target="_blank" href="https://www.google.com.br/maps/@{{ entrega.localizacao.latitude}},{{ entrega.localizacao.longitude}},16z" class="btn btn-info"  >Mapa</a>
-                                    <button class="btn btn-success" data-toggle="modal" data-target="#modalAnexo{{entrega.id}}">Anexo</button>
+								
+                                <td><a  target="_blank" href="https://www.google.com/maps/search/?api=1&query={{ entrega.localizacao.latitude}},{{ entrega.localizacao.longitude}}" class="btn btn-info"  >Mapa</a>
+									<button class="btn btn-success" data-toggle="modal" data-target="#modalAnexo{{entrega.id}}">Anexo</button>
+									<button class="btn btn-warning" data-toggle="modal" data-target="#modalEditar{{entrega.id}}">Editar</button>
+									<a class="btn btn-danger" href='/entrega/{{ entrega.id}}/excluir'>Excluir</a>
                                 </td>
 							</tr>
+
+							<!-- Modal -->
+							<div class="modal fade" id="modalEditar{{entrega.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+								<div class="modal-dialog" role="document">
+									<div class="modal-content">
+										<div class="modal-header">
+											<h5 class="modal-title" id="exampleModalLabel">Editar Entrega</h5>
+											<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+												<span aria-hidden="true">&times;</span>
+											</button>
+										</div>
+										<div class="modal-body">
+											<form action="{% url 'editar_entregas' %}" method="post">
+												<input type="hidden" value="{{entrega.id}}" name='id_entrega'>
+												{% csrf_token %}
+												<div class="form-group">
+													<label>Descrição:</label>
+												<input type="text" class="form-control" id="id_nome" name='descricao' value="{{entrega.descricao}}"  placeholder="Descriçao" required>
+												</div>
+						
+						
+												<div class="modal-footer">
+													<button type="reset"  class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+													<button type="submit" class="btn btn-primary">Salvar</button>
+												</div>
+						
+											</form>
+										</div>
+									</div>
+								</div>
+							</div>
 
 
 							<!-- Modal -->

@@ -2,32 +2,32 @@
 
 {% block nav %}
 <div class="nav-wrapper">
-  <ul class="nav flex-column">
-    <li class="nav-item">
-      <a class="nav-link" href="{% url 'dashboard' %}">
-        <i class="material-icons">place</i>
-        <span>Mapa</span>
-      </a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" href="{% url 'listar_entregas' %}">
-        <i class="material-icons">swap_horiz</i>
-        <span>Entregas</span>
-      </a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link " href="{% url 'listar_empresas' %}">
-        <i class="material-icons">account_balance</i>
-        <span>Empresas</span>
-      </a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link active" href="{% url 'listar_funcionarios' %}">
-        <i class="material-icons">motorcycle</i>
-        <span>Funcionários</span>
-      </a>
-    </li>
-  </ul>
+	<ul class="nav flex-column">
+		<li class="nav-item">
+			<a class="nav-link" href="{% url 'dashboard' %}">
+				<i class="material-icons">place</i>
+				<span>Mapa</span>
+			</a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link" href="{% url 'listar_entregas' %}">
+				<i class="material-icons">swap_horiz</i>
+				<span>Entregas</span>
+			</a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link " href="{% url 'listar_empresas' %}">
+				<i class="material-icons">account_balance</i>
+				<span>Empresas</span>
+			</a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link active" href="{% url 'listar_funcionarios' %}">
+				<i class="material-icons">motorcycle</i>
+				<span>Funcionários</span>
+			</a>
+		</li>
+	</ul>
 </div>
 
 {% endblock %}
@@ -39,6 +39,7 @@
 		<div class="col-12 col-sm-4 text-center text-sm-left mb-0">
 			<h3 class="page-title">Funcionarios Cadastrados</h3>
 		</div>
+		
 		<!-- Button trigger modal -->
 		<div class="col-12 col-sm-8 text-center text-sm-right mb-0">
 			<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
@@ -50,7 +51,8 @@
 
 
 	<!-- Modal -->
-	<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+		aria-hidden="true">
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
@@ -60,38 +62,51 @@
 					</button>
 				</div>
 				<div class="modal-body">
-					<form accept="{% url 'listar_empresas' %}" method="post">
+					<form action="{% url 'listar_funcionarios' %}" method="post">
 
 						{% csrf_token %}
 						<div class="form-group">
 							<label>Nome:</label>
-							<input type="text" class="form-control" id="id_nome" name='nome'  placeholder="Nome" required>
+							<input type="text" class="form-control" id="id_nome" name='nome' placeholder="Nome"
+								required>
 						</div>
 						<div class="form-group">
-							<label>CPF:</label>
-							<input type="text" class="form-control" id="id_cpf" name="cpf" placeholder="CPF" required>
+							<label>CPF (Somente números):</label>
+							<input type="text" class="form-control" id="id_cpf" name="cpf" placeholder="CPF" minlength="11" required>
 						</div>
 						<div class="form-group">
 							<label>Senha:</label>
-							<input type="text" class="form-control" id="id_senha" name="senha" placeholder="Senha para acesso" required>
+							<input type="text" class="form-control" id="id_senha" name="senha" minlength="8"
+								placeholder="Senha para acesso" required>
 						</div>
 
-						
+
 						<div class="form-group">
 							<label>Empresa:</label>
 						</div>
+						{% if empresas %}
+						
 						{% for empresa in empresas %}
 						<div class="form-check form-check-inline">
-							<input class="form-check-input" type="checkbox" name="empresa-{{empresa.id}}" id="empresa-{{empresa.id}}" value="{{empresa.id}}">
+							<input class="form-check-input" type="checkbox" name="empresa-{{empresa.id}}"
+								id="empresa-{{empresa.id}}" value="{{empresa.id}}">
 							<label class="form-check-label" for="inlineCheckbox1">{{empresa.nome}}</label>
 						</div>
+						<br>
 						{% endfor %}
+						{% else %}
+						<label>Não há empresas cadastradas!</label>
+						{% endif %}
 						
 
 
+
 						<div class="modal-footer">
-							<button type="reset"  class="btn btn-danger" data-dismiss="modal">Cancelar</button>
-							<button type="submit" class="btn btn-primary">Salvar</button>
+							<button type="reset" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+							{% if empresas %}
+								<button type="submit" class="btn btn-primary">Salvar</button>
+							{% endif %}
+							
 						</div>
 
 					</form>
@@ -111,7 +126,8 @@
 								<th scope="col">Nome</th>
 								<th scope="col">CPF</th>
 								<th scope="col">Empresa</th>
-								<th scope="col">Localizacoes</th>
+								<th scope="col">Localizações</th>
+								<th scope="col">Opções</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -120,26 +136,100 @@
 								<td>{{ funcionario.nome}}</td>
 								<td>{{ funcionario.cpf}}</td>
 								<td>
-                                    {% for empresa in funcionario.empresas.all %}
+									{% for empresa in funcionario.empresas.all %}
 
-                                    {{ empresa.nome}}
+									{{ empresa.nome}}
 
 									<br>
 
-                                    {% endfor %}
-                                </td>
+									{% endfor %}
+								</td>
 
 								<td>
-                                    {% for loc in funcionario.localizacoes.all %}
+									{% for loc in funcionario.localizacoes.all %}
 
-                                    {{ loc.latitude}} / {{ loc.longitude}} / {{ loc.data}}
+									{{ loc.latitude}} / {{ loc.longitude}} / {{ loc.data}}
 
 									<br>
 
-                                    {% endfor %}
-                                </td>
+									{% endfor %}
+								</td>
+								<td>
+									<button class="btn btn-warning" data-toggle="modal"
+										data-target="#modalEditar{{funcionario.id}}">Editar</button>
+									<a class="btn btn-danger" href='/funcionario/{{ funcionario.id}}/excluir'>Excluir</a>
+
+								</td>
 
 							</tr>
+
+							<!-- Modal -->
+							<div class="modal fade" id="modalEditar{{funcionario.id}}" tabindex="-1" role="dialog"
+								aria-labelledby="exampleModalLabel" aria-hidden="true">
+								<div class="modal-dialog" role="document">
+									<div class="modal-content">
+										<div class="modal-header">
+											<h5 class="modal-title" id="exampleModalLabel">Editar Funcionario</h5>
+											<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+												<span aria-hidden="true">&times;</span>
+											</button>
+										</div>
+										<div class="modal-body">
+											<form action="{% url 'editar_funcionarios' %}" method="post">
+												<input type="hidden" name='id_funcionario' value="{{funcionario.id}}">
+												{% csrf_token %}
+												<div class="form-group">
+													<label>Nome:</label>
+													<input type="text" class="form-control" id="id_nome" name='nome'
+														placeholder="Nome" value="{{funcionario.nome}}" required>
+												</div>
+												<div class="form-group">
+													<label>CPF (Somente números):</label>
+													<input type="text" class="form-control" id="id_cpf" name="cpf" minlength="11"
+														placeholder="CPF" value="{{funcionario.cpf}}" required>
+												</div>
+												<div class="form-group">
+													<label>Senha:</label>
+													<input type="text" class="form-control" id="id_senha" name="senha" minlength="8"
+														placeholder="Senha para acesso" value="{{funcionario.senha}}" required>
+												</div>
+
+
+												<div class="form-group">
+													<label>Empresa:</label>
+												</div>
+												{% for empresa in empresas %}
+												<div class="form-check form-check-inline">
+												
+												
+												
+												<input class="form-check-input" type="checkbox"
+												name="empresa-{{empresa.id}}" id="empresa-{{empresa.id}}"
+												value="{{empresa.id}}">
+												
+													<label class="form-check-label"
+														for="inlineCheckbox1">{{empresa.nome}}</label>
+												</div>
+												<br>
+												
+												{% endfor %}
+												
+												
+												
+
+
+
+												<div class="modal-footer">
+													<button type="reset" class="btn btn-danger"
+														data-dismiss="modal">Cancelar</button>
+													<button type="submit" class="btn btn-primary">Salvar</button>
+												</div>
+
+											</form>
+										</div>
+									</div>
+								</div>
+							</div>
 
 
 							{% endfor %}

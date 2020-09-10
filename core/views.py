@@ -8,10 +8,40 @@ from datetime import datetime
 def home(request):
 	return render(request, 'index.html')
 
+def excluir_entrega(request, id_entrega):
+    if verificaLogin(request) == False:
+        return render(request, 'entrar.html')
+    entrega = Entrega.objects.get(id=id_entrega)
+    entrega.ativo = False
+    entrega.save()
+    return redirect('listar_entregas')
+
+def excluir_funcionario(request, id_funcionario):
+    if verificaLogin(request) == False:
+        return render(request, 'entrar.html')
+    funcioario = Funcionario.objects.get(id=id_funcionario)
+    funcioario.ativo = False
+    funcioario.save()
+    return redirect('listar_funcionarios')
+
+def excluir_empresa(request, id_empresa):
+    if verificaLogin(request) == False:
+        return render(request, 'entrar.html')
+    empresa = Empresa.objects.get(id=id_empresa)
+    empresa.ativo = False
+    empresa.save()
+    return redirect('listar_empresas')
+
 def entrar(request):
     if request.method == 'POST':
         login = request.POST['login']
         senha = request.POST['senha']
+        if login == 'amlogistica.the@gmail.com' and senha == '@qui@li*2020':
+            request.session['login'] = 'amlogistica.the@gmail.com'
+            request.session['senha'] = '@qui@li*2020'
+            request.session['nome'] = 'AM Logística'
+            request.session['empresa'] = False
+            return redirect('dashboard')
         try:
             perfil = Perfil.objects.get(login = login, senha=senha)
             request.session['login'] = login
@@ -50,6 +80,15 @@ def sair(request):
     request.session['nome'] = None
     return render(request, 'entrar.html')
 
+def editar_entregas(request):
+    if verificaLogin(request) == False:
+        return render(request, 'entrar.html')
+    id_entrega = request.POST['id_entrega']
+    entrega = Entrega.objects.get(id=int(id_entrega))
+    entrega.descricao = request.POST['descricao']
+    entrega.save()
+    return redirect('listar_entregas')
+
 
 def dashboard(request):
     if verificaLogin(request) == False:
@@ -73,9 +112,43 @@ def listar_empresas(request):
 
         return redirect('listar_empresas')
     else:
-        empresas = Empresa.objects.all()
+        empresas = Empresa.objects.filter(ativo=True).all()
     return render(request, 'empresas.html', {'empresas': empresas} )
 
+def editar_empresas(request):
+    if verificaLogin(request) == False:
+        return render(request, 'entrar.html')
+    id_empresa = request.POST['id_empresa']
+    empresa = Empresa.objects.get(id=int(id_empresa))
+    empresa.nome = request.POST['nome']
+    empresa.descricao = request.POST['descricao']
+    empresa.cnpj = request.POST['cnpj']
+    empresa.senha = request.POST['senha']
+    empresa.telefone = request.POST['telefone']
+    empresa.save()
+
+    return redirect('listar_empresas')
+
+def editar_funcionarios(request):
+    if verificaLogin(request) == False:
+        return render(request, 'entrar.html')
+    id_funcionario = request.POST['id_funcionario']
+    funcionario = Funcionario.objects.get(id=int(id_funcionario))
+
+    funcionario.nome = request.POST['nome']
+    funcionario.cpf = request.POST['cpf']
+    funcionario.senha = request.POST['senha']
+    empresas = Empresa.objects.all()
+    for empresa in empresas:
+        funcionario.empresas.remove(empresa)
+    funcionario.save()
+
+    for empresa in empresas:
+        if 'empresa-'+str(empresa.id) in request.POST: 
+            variavel = request.POST['empresa-'+str(empresa.id)]
+            funcionario.empresas.add(Empresa.objects.get(id=int(empresa.id)))
+    funcionario.save()
+    return redirect('listar_funcionarios')
 
 def listar_funcionarios(request):
     if verificaLogin(request) == False:
@@ -108,8 +181,8 @@ def listar_funcionarios(request):
         funcionario.save()
         return redirect('listar_funcionarios')
     else:
-        funcionarios = Funcionario.objects.all()
-        empresas = Empresa.objects.all()
+        funcionarios = Funcionario.objects.filter(ativo=True).all()
+        empresas = Empresa.objects.filter(ativo=True).all()
     return render(request, 'funcionarios.html', {'empresas': empresas, 'funcionarios': funcionarios} )
 
 def listar_entregas(request):
@@ -141,21 +214,20 @@ def listar_entregas(request):
 
         return redirect('listar_entregas')
     else:
-        funcionarios = Funcionario.objects.all()
-        empresas = Empresa.objects.all()
+        funcionarios = Funcionario.objects.filter(ativo=True)
+        empresas = Empresa.objects.filter(ativo=True)
         if request.session['empresa'] == True:
-            entregas_total = Entrega.objects.all().order_by('id')
+            entregas_total = Entrega.objects.filter(ativo=True).order_by('id')
             entregas = []
             for entrega in entregas_total:
                 if entrega.empresa.id == request.session['id_empresa']:
                     entregas.append(entrega)
         else:
-            entregas = Entrega.objects.all().order_by('id')
+            entregas = Entrega.objects.filter(ativo=True).order_by('id')
             
     return render(request, 'entregas.html', {'empresas': empresas, 'funcionarios': funcionarios, 'entregas': entregas.reverse()} )
 
 def carga(request):
-    realizarCarga()
     return render(request, 'entrar.html')
 
 

@@ -2,32 +2,32 @@
 
 {% block nav %}
 <div class="nav-wrapper">
-  <ul class="nav flex-column">
-    <li class="nav-item">
-      <a class="nav-link" href="{% url 'dashboard' %}">
-        <i class="material-icons">place</i>
-        <span>Mapa</span>
-      </a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" href="{% url 'listar_entregas' %}">
-        <i class="material-icons">swap_horiz</i>
-        <span>Entregas</span>
-      </a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link active" href="{% url 'listar_empresas' %}">
-        <i class="material-icons">account_balance</i>
-        <span>Empresas</span>
-      </a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" href="{% url 'listar_funcionarios' %}">
-        <i class="material-icons">motorcycle</i>
-        <span>Funcionários</span>
-      </a>
-    </li>
-  </ul>
+	<ul class="nav flex-column">
+		<li class="nav-item">
+			<a class="nav-link" href="{% url 'dashboard' %}">
+				<i class="material-icons">place</i>
+				<span>Mapa</span>
+			</a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link" href="{% url 'listar_entregas' %}">
+				<i class="material-icons">swap_horiz</i>
+				<span>Entregas</span>
+			</a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link active" href="{% url 'listar_empresas' %}">
+				<i class="material-icons">account_balance</i>
+				<span>Empresas</span>
+			</a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link" href="{% url 'listar_funcionarios' %}">
+				<i class="material-icons">motorcycle</i>
+				<span>Funcionários</span>
+			</a>
+		</li>
+	</ul>
 </div>
 
 {% endblock %}
@@ -50,7 +50,8 @@
 
 
 	<!-- Modal -->
-	<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+		aria-hidden="true">
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
@@ -60,33 +61,38 @@
 					</button>
 				</div>
 				<div class="modal-body">
-					<form accept="{% url 'listar_empresas' %}" method="post">
+					<form action="{% url 'listar_empresas' %}" method="post">
 
 						{% csrf_token %}
 						<div class="form-group">
 							<label>Nome:</label>
-							<input type="text" class="form-control" id="id_nome" name='nome'  placeholder="Nome" required>
+							<input type="text" class="form-control" id="id_nome" name='nome' placeholder="Nome"
+								required>
 						</div>
 						<div class="form-group">
 							<label>Descrição:</label>
-							<input type="text" class="form-control" id="id_descricao" name="descricao" placeholder="Descrição" required>
+							<input type="text" class="form-control" id="id_descricao" name="descricao"
+								placeholder="Descrição" required>
 						</div>
 						<div class="form-group ">
 							<label>CNPJ:</label>
-							<input type="text" class="form-control" id="id_cnpj" name="cnpj" placeholder="CNPJ" required>
+							<input type="text" class="form-control" id="id_cnpj" name="cnpj" placeholder="CNPJ"
+								required>
 						</div>
 						<div class="form-group ">
 							<label>Senha:</label>
-							<input type="password" class="form-control" id="id_senha" name="senha" placeholder="Senha" required>
+							<input type="text" class="form-control" id="id_senha" minlength="8" name="senha" placeholder="Senha"
+								required>
 						</div>
-                        <div class="form-group ">
+						<div class="form-group ">
 							<label>Telefone:</label>
-							<input type="text" class="form-control" id="id_telefone" name="telefone" placeholder="Telefone" required>
+							<input type="text" class="form-control" id="id_telefone" name="telefone"
+								placeholder="Telefone" required>
 						</div>
 
 
 						<div class="modal-footer">
-							<button type="reset"  class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+							<button type="reset" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
 							<button type="submit" class="btn btn-primary">Salvar</button>
 						</div>
 
@@ -108,6 +114,7 @@
 								<th scope="col">Descrição</th>
 								<th scope="col">CNPJ</th>
 								<th scope="col">Telefone</th>
+								<th scope="col">Opções</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -116,9 +123,68 @@
 								<td>{{ empresa.nome}}</td>
 								<td>{{ empresa.descricao}}</td>
 								<td>{{ empresa.cnpj}}</td>
-                                <td>{{ empresa.telefone}}</td>
-
+								<td>{{ empresa.telefone}}</td>
+								<td>
+									<button class="btn btn-warning" data-toggle="modal" data-target="#modalEditar{{empresa.id}}">Editar</button>
+									<a class="btn btn-danger" href='/empresa/{{ empresa.id}}/excluir'>Excluir</a>
+								</td>
+								
 							</tr>
+
+							<!-- Modal -->
+							<div class="modal fade" id="modalEditar{{empresa.id}}" tabindex="-1" role="dialog"
+								aria-labelledby="exampleModalLabel" aria-hidden="true">
+								<div class="modal-dialog" role="document">
+									<div class="modal-content">
+										<div class="modal-header">
+											<h5 class="modal-title" id="exampleModalLabel">Cadastrar Empresa</h5>
+											<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+												<span aria-hidden="true">&times;</span>
+											</button>
+										</div>
+										<div class="modal-body">
+											<form action="{% url 'editar_empresas' %}" method="post">
+												<input type="hidden" name="id_empresa" value="{{empresa.id}}" >
+												{% csrf_token %}
+												<div class="form-group">
+													<label>Nome:</label>
+													<input type="text" class="form-control" value="{{empresa.nome}}" id="id_nome" name='nome'
+														placeholder="Nome" required>
+												</div>
+												<div class="form-group">
+													<label>Descrição:</label>
+													<input type="text" class="form-control" id="id_descricao"
+														name="descricao" value="{{empresa.descricao}}" placeholder="Descrição" required>
+												</div>
+												<div class="form-group ">
+													<label>CNPJ:</label>
+													<input type="text" class="form-control" value="{{empresa.cnpj}}"
+													 id="id_cnpj" name="cnpj"
+														placeholder="CNPJ" required>
+												</div>
+												<div class="form-group ">
+													<label>Senha:</label>
+													<input type="text" class="form-control" value="{{empresa.senha}}" id="id_senha"
+														name="senha" placeholder="Senha"  minlength="8" required>
+												</div>
+												<div class="form-group ">
+													<label>Telefone:</label>
+													<input type="text" class="form-control" id="id_telefone" value="{{empresa.telefone}}"
+														name="telefone" placeholder="Telefone" required>
+												</div>
+
+
+												<div class="modal-footer">
+													<button type="reset" class="btn btn-danger"
+														data-dismiss="modal">Cancelar</button>
+													<button type="submit" class="btn btn-primary">Salvar</button>
+												</div>
+
+											</form>
+										</div>
+									</div>
+								</div>
+							</div>
 
 
 							{% endfor %}
